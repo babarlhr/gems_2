@@ -104,7 +104,8 @@
                                 <field name="po_boq_id" invisible="1"/>
                                 <field name="product_categ_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
                                 <field name="supply_type"/>
-                                <field name="product_id" context="{'default_sale_ok': False, 'default_categ_id': product_categ_id}"/>
+                                <!-- <field name="product_id" context="{'default_sale_ok': False, 'default_categ_id': product_categ_id}"/> -->
+                                <field name="product_id" context="{'default_sale_ok': False}"/>
                                 <field name="name" />
                                 <field name="product_uom" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}" readonly="1"/>
                                 <field name="supply_desc"/>

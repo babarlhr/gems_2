@@ -5,7 +5,7 @@
     "author": "Denero Team",
     "website": "https://www.deneroteam.com",
     "category": "Project",
-    "depends": ['operating_unit_division', 'purchase', 'purchase_requisition'],
+    "depends": ['operating_unit_division', 'product', 'purchase', 'purchase_requisition'],
     "data": [
         "views/template.xml",
         "security/capex_procurement_module_categ.xml",

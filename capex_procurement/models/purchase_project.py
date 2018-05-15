@@ -838,20 +838,40 @@ class PurchaseRequisitionLine(models.Model):
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
+#     def _inverse_operating_unit_id(self):
+#         # purchase_projects = self.env['purchase.project'].sudo()
+#         for project in self:
+#             project.operating_unit_div_id = project.operating_unit_id.division_id
+#             project.company_id = project.operating_unit_id.company_id
+
     def _inverse_operating_unit_id(self):
         # purchase_projects = self.env['purchase.project'].sudo()
         for project in self:
-            project.operating_unit_div_id = project.operating_unit_id.division_id
-            project.company_id = project.operating_unit_id.company_id
+            if project.operating_unit_id:
+                project.operating_unit_div_id = project.operating_unit_id.division_id
+                project.company_id = project.operating_unit_id.company_id
 
-    project_id = fields.Many2one('purchase.project', string="Project", readonly=True)
+    project_id = fields.Many2one('purchase.project', string="Project", readonly=False)
     boq_id = fields.Many2one('purchase.project.boq', string="BOQ", readonly=True)
     operating_unit_id = fields.Many2one(
-        'operating.unit', 'Operating Unit', inverse="_inverse_operating_unit_id"
+        'operating.unit', 'Operating Unit', inverse="_inverse_operating_unit_id", default=lambda self:self.env.user.default_operating_unit_id
     )
     operating_unit_div_id = fields.Many2one(
         'operating.unit.division', string='Division',readonly=True
     )
+
+#     @api.model
+#     def create(self, vals):
+#         res = super(PurchaseOrder, self).create(vals)
+#         if 'requisition_id' in vals:
+#             res.boq_id = res.requisition_id.boq_id
+#             res.project_id = res.requisition_id.project_id
+#             res.operating_unit_id = res.project_id.operating_unit_id and res.project_id.operating_unit_id.id or False
+#             res.operating_unit_div_id = res.project_id.operating_unit_id and res.project_id.operating_unit_id.division_id  and res.project_id.operating_unit_id.division_id.id or False
+#             res.company_id = res.project_id.operating_unit_id and res.project_id.operating_unit_id.company_id and res.project_id.operating_unit_id.company_id.id or self.env.user.company_id.id
+#         else:
+#             res.company_id = self.env.user.company_id.id
+#         return res
 
     @api.model
     def create(self, vals):
@@ -859,9 +879,10 @@ class PurchaseOrder(models.Model):
         if 'requisition_id' in vals:
             res.boq_id = res.requisition_id.boq_id
             res.project_id = res.requisition_id.project_id
-            res.operating_unit_id = res.project_id.operating_unit_id and res.project_id.operating_unit_id.id or False
-            res.operating_unit_div_id = res.project_id.operating_unit_id and res.project_id.operating_unit_id.division_id  and res.project_id.operating_unit_id.division_id.id or False
-            res.company_id = res.project_id.operating_unit_id and res.project_id.operating_unit_id.company_id and res.project_id.operating_unit_id.company_id.id or self.env.user.company_id.id
+            if res.project_id:
+                res.operating_unit_id = res.project_id.operating_unit_id and res.project_id.operating_unit_id.id or False
+                res.operating_unit_div_id = res.project_id.operating_unit_id and res.project_id.operating_unit_id.division_id  and res.project_id.operating_unit_id.division_id.id or False
+                res.company_id = res.project_id.operating_unit_id and res.project_id.operating_unit_id.company_id and res.project_id.operating_unit_id.company_id.id or self.env.user.company_id.id
         else:
             res.company_id = self.env.user.company_id.id
         return res
@@ -878,16 +899,27 @@ class PurchaseOrder(models.Model):
                 rec.company_id = rec.project_id.operating_unit_id and rec.project_id.operating_unit_id.company_id and rec.project_id.operating_unit_id.company_id.id or self.env.user.company_id.id
         return res
 
+#     @api.onchange('requisition_id')
+#     def _onchange_requisition_id(self):
+#         res = super(PurchaseOrder, self)._onchange_requisition_id()
+#         self.boq_id = self.requisition_id.boq_id
+#         self.project_id = self.requisition_id.project_id
+#         self.operating_unit_id = self.project_id.operating_unit_id and self.project_id.operating_unit_id.id or False
+#         self.operating_unit_div_id = self.project_id.operating_unit_id and self.project_id.operating_unit_id.division_id  and self.project_id.operating_unit_id.division_id.id or False
+#         self.company_id = self.project_id.operating_unit_id and self.project_id.operating_unit_id.company_id and self.project_id.operating_unit_id.company_id.id or self.env.user.company_id.id
+#         return res
+
     @api.onchange('requisition_id')
     def _onchange_requisition_id(self):
         res = super(PurchaseOrder, self)._onchange_requisition_id()
-        self.boq_id = self.requisition_id.boq_id
-        self.project_id = self.requisition_id.project_id
-        self.operating_unit_id = self.project_id.operating_unit_id and self.project_id.operating_unit_id.id or False
-        self.operating_unit_div_id = self.project_id.operating_unit_id and self.project_id.operating_unit_id.division_id  and self.project_id.operating_unit_id.division_id.id or False
-        self.company_id = self.project_id.operating_unit_id and self.project_id.operating_unit_id.company_id and self.project_id.operating_unit_id.company_id.id or self.env.user.company_id.id
+        if self.requisition_id:
+            self.boq_id = self.requisition_id.boq_id
+            self.project_id = self.requisition_id.project_id
+            self.operating_unit_id = self.project_id.operating_unit_id and self.project_id.operating_unit_id.id or False
+            self.operating_unit_div_id = self.project_id.operating_unit_id and self.project_id.operating_unit_id.division_id  and self.project_id.operating_unit_id.division_id.id or False
+            self.company_id = self.project_id.operating_unit_id and self.project_id.operating_unit_id.company_id and self.project_id.operating_unit_id.company_id.id or self.env.user.company_id.id
         return res
-
+        
     # @api.onchange('requisition_id')
     # def onchange_requisition_id(self):
     #     for rec in self:
@@ -922,9 +954,13 @@ class PurchaseOrderLine(models.Model):
         string='Scheduled Date', required=False,
         index=True, default=fields.datetime.now()
     )
+#     product_id = fields.Many2one(
+#         'product.product', string='Product',
+#         domain="[('categ_id', '=', product_categ_id), ('purchase_ok', '=', True)]", change_default=True, required=True
+#     )
     product_id = fields.Many2one(
         'product.product', string='Product',
-        domain="[('categ_id', '=', product_categ_id), ('purchase_ok', '=', True)]", change_default=True, required=True
+        domain="[('purchase_ok', '=', True)]", change_default=True, required=True
     )
     qty_initial = fields.Float("Qty Demand.", digits=dp.get_precision('Product Unit of Measure'), readonly=True)
     qty_quoted = fields.Float("Qty.", digits=dp.get_precision('Product Unit of Measure'))
