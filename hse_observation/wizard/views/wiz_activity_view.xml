@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_wiz_activity_form" model="ir.ui.view">
+        <field name="name">wiz.activity.form</field>
+        <field name="model">wiz.activity</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="reschedule" invisible="1"/>
+                        <field name="date_deadline" class="oe_inline"
+                            attrs="{'invisible': [('reschedule', '=', False)],'required': [('reschedule', '=', True)]}"
+                             />
+                        <field name="activity_id" invisible="1"/>
+                        <field name="observation_id" invisible="1"/>
+                    </group>
+                    <label for="feedback" />
+                    <field name="feedback" />
+                </sheet>
+                <footer>
+                    <button string="Schedule" name="action_reschedule"
+                            type="object" class="btn-primary" attrs="{'invisible': [('reschedule', '=', False)]}"/>
+                    <span attrs="{'invisible': [('reschedule', '=', False)]}">
+                        or
+                    </span>
+                    <button string="Mark as Done" name="action_done"
+                        type="object" class="btn-primary" attrs="{'invisible': [('reschedule', '=', True)]}"/>
+                    <span attrs="{'invisible': [('reschedule', '=', True)]}">
+                        or
+                    </span>
+                    <button string="Discard" class="btn-default" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="capex_menu_tender_procument"
+        name="Tender Procurement"
+        web_icon="capex_menus,static/description/icon.png"
+        sequence="6"
+        groups="capex_procurement.group_user_capex_project_only"
+    />
+
+    <menuitem id="capex_menu_general_procument"
+        name="General Procurement"
+        web_icon="capex_menus,static/description/icon.png"
+        sequence="7"
+        groups="capex_procurement.group_user_capex_project_only"
+    />
+
+    <menuitem
+        id="menu_action_capex_menu_tender_tender"
+        action="purchase_requisition.action_purchase_requisition"
+        parent="capex_menu_tender_procument"
+        string="Tender"
+        sequence="1"
+    />
+
+    <menuitem 
+        id="menu_action_capex_menu_tender_purchase_rfq"
+        action="purchase.purchase_rfq"
+        parent="capex_menu_tender_procument"
+        string="RFQs"
+        sequence="2"/>
+
+    <menuitem
+        id="menu_action_capex_menu_tender_purchase_po"
+        action="purchase.purchase_form_action" 
+        parent="capex_menu_tender_procument"
+        string="PO"
+        sequence="3"
+    />
+
+    <menuitem 
+        id="menu_action_capex_menu_general_purchase_rfq"
+        action="purchase.purchase_rfq"
+        parent="capex_menu_general_procument"
+        string="RFQs"
+        sequence="1"/>
+
+    <menuitem
+        id="menu_action_capex_menu_general_purchase_po"
+        action="purchase.purchase_form_action" 
+        parent="capex_menu_general_procument"
+        string="PO"
+        sequence="2"
+    />
+
+</odoo>

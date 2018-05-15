@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_order_form_bill_to_field" model="ir.ui.view">
+        <field name="name">purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form" />
+        <field name="priority">17</field>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="partner_bill_to_id" context="{'default_type':'invoice', 'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}" options='{"always_reload": True}' domain="[('supplier','=',True)]"/>
+                <field name="partner_shipping_id" context="{'default_usage':'internal'}" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}" domain="[('usage', '=', 'internal')]"/>
+            </field>
+        </field>
+    </record>
+</odoo>

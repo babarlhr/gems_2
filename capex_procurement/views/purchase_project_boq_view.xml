@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <record id="boq_purchase_line_tree_view" model="ir.ui.view">
+        <field name="name">boq.purchase.order.line.tree</field>
+        <field name="model">purchase.order.line</field>
+        <field eval="1" name="priority"/>
+        <field name="arch" type="xml">
+            <tree string="Purchase Products" create="false">
+                <field name="product_id"/>
+                <field name="name" string="Spec."/>
+                <field name="order_id" string="PO#" />
+                <field name="partner_id" string="Vendor"/>
+                <field name="price_unit" />
+                <field name="product_qty" sum="Total Qty"/>
+                <field name="product_uom" groups="product.group_uom"/>
+                <field name="price_subtotal" sum="Total"/>
+                <field name="state" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="boq_purchase_line_tree" model="ir.actions.act_window">
+        <field name="name">BOQ Purchase Lines</field>
+        <field name="res_model">purchase.order.line</field>
+        <field name="context">{}</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="boq_purchase_line_tree_view"/>
+        <field name="search_view_id" ref="purchase.purchase_order_line_search"/>
+        <field name="domain">[('state','=', 'purchase'), ('boq_line_id', '=', active_id)]</field>
+    </record>
+    
+    <record id="view_purchase_project_boq_form" model="ir.ui.view">
+        <field name="name">purchase.project.boq.form</field>
+        <field name="model">purchase.project.boq</field>
+        <field name="arch" type="xml">
+            <form string="BOQ">
+                <header>
+                    <field name="is_tec_manager" invisible="1"/>
+                    <field name="is_com_manager" invisible="1"/>
+                    <field name="is_fin_manager" invisible="1"/>
+                    <field name="is_mgt_manager" invisible="1"/>
+
+                    <button type="object" string="Submit for Approval" name="request_next_approval" class="oe_highlight"
+                    attrs="{'invisible': [('state','!=', 'draft')]}"/>
+
+                    <!-- <button name="%(action_mark_status)d" string="Action"
+                        type="action" class="oe_highlight" attrs="{'invisible': ['|',
+                            ('is_tec_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'technical_approval')
+                            ]}" />
+
+                    <button name="%(action_mark_status)d" string="Action"
+                        type="action" class="oe_highlight" attrs="{'invisible': ['|',
+                            ('is_com_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'commercial_approval')
+                        ]}" />
+
+                    <button name="%(action_mark_status)d" string="Action" 
+                        type="action" class="oe_highlight" attrs="{'invisible': ['|',
+                            ('is_fin_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'finance_approval')
+                        ]}"/>
+
+                    <button name="%(action_mark_status)d" string="Action" 
+                        type="action" class="oe_highlight" attrs="{'invisible': ['|',
+                            ('is_mgt_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'management_approval')
+                        ]}"/> -->
+
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="create_rfq" class="oe_stat_button"
+                             icon="fa-shopping-cart" attrs="{'invisible': [('state','!=', 'done')]}"
+                        >
+                            <field string="Tender" name="total_rfq" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <label for="project_id" />
+                    <field name="project_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}" style="width:50%;"/>
+                    <h1>
+                        <field name="name" placeholder="BOQ Title"/>
+                    </h1>
+                    <br/>
+                    <group>
+                        <group>
+                            <field name="create_date" />
+                            <field name="priority" />
+                            <field name="boq_manager_id"
+                                options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
+                            <field name="boq_incharge_id"
+                                options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
+                            <field name="create_uid" invisible="1"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="approved_date"/>
+                            <field name="operating_unit_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
+                            <field name="operating_unit_div_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="boq_line_ids" attrs="{'readonly': [('state','=', 'done')]}">
+                            <tree editable="bottom">
+                                <field name="po_boq_id" invisible="1"/>
+                                <field name="product_categ_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
+                                <field name="supply_type"/>
+                                <field name="product_id" context="{'default_sale_ok': False, 'default_categ_id': product_categ_id}"/>
+                                <field name="name" />
+                                <field name="product_uom" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}" readonly="1"/>
+                                <field name="supply_desc"/>
+                                <field name="product_qty" />
+                                <field name="product_qty_confirmed" readonly="1"
+                                />
+                                <button 
+                                    name="%(capex_procurement.boq_purchase_line_tree)d"
+                                    type="action"
+                                    string="Purchase"
+                                    icon="fa-list" 
+                                />
+                            </tree>
+                    </field>
+                    <div width="100%">
+                            <label for="technical_manager" style="width: 14%;"/>
+                            <field name="technical_manager"
+                                attrs="{'readonly': ['|', ('technical_state', '=', 'done'), ('state','=', 'done')]}"
+                                options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"
+                                class="oe_inline"
+                                style="min-width: 25% !important;margin-right:5px !important; "
+                            />
+                            <field name="technical_state"
+                             class="oe_inline mt8 o_state done" readonly="1" style="min-width: 10% !important; " attrs="{'invisible' : [('technical_state', '!=', 'done')]}"/>
+                            <field name="technical_state"
+                             class="oe_inline mt8 o_state pending" readonly="1" style="min-width: 10% !important; "
+                             attrs="{'invisible' : [('technical_state', '!=', 'pending')]}"
+                             />
+                            <field name="technical_state"
+                             class="oe_inline mt8 o_state cancelled" readonly="1" style="min-width: 10% !important; "
+                             attrs="{'invisible' : [('technical_state', '!=', 'cancelled')]}"
+                             />
+                             <field name="technical_state"
+                             class="oe_inline mt8 o_state hold" readonly="1" style="min-width: 10% !important; "
+                             attrs="{'invisible' : [('technical_state', '!=', 'hold')]}"
+                             />
+                            <field name="technical_approved_date"  class="oe_inline mt8" readonly="1" style="min-width: 10% !important;margin-right:5px !important; "/>
+                            <br/>
+
+                            <label for="commersial_manager" style="width: 14%;" />
+                            <field name="commersial_manager"
+                                attrs="{'readonly': ['|', ('commercial_state', '=', 'done'), ('state','=', 'done')]}"
+                                options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"
+                                class="oe_inline" style="min-width: 25% !important;margin-right:5px !important; "
+                            />
+                            <field name="commercial_state" class="oe_inline mt8 o_state pending" readonly="1" style="min-width: 10% !important; "
+                            attrs="{'invisible' : [('commercial_state', '!=', 'pending')]}"
+                            />
+                            <field name="commercial_state" class="oe_inline mt8 o_state done" readonly="1" style="min-width: 10% !important; "
+                            attrs="{'invisible' : [('commercial_state', '!=', 'done')]}"
+                            />
+                            <field name="commercial_state" class="oe_inline mt8 o_state hold" readonly="1" style="min-width: 10% !important; "
+                            attrs="{'invisible' : [('commercial_state', '!=', 'hold')]}"
+                            />
+                            <field name="commercial_state" class="oe_inline mt8 o_state cancelled" readonly="1" style="min-width: 10% !important; "
+                            attrs="{'invisible' : [('commercial_state', '!=', 'cancelled')]}"
+                            />
+                            <field name="commercial_approved_date"  class="oe_inline mt8" readonly="1" style="min-width: 10% !important;margin-right:5px !important; "/>
+                            <br/>
+                            
+                            <label for="financial_manager" style="width: 14%;"/>
+                            <field name="financial_manager"
+                                attrs="{'readonly': ['|', ('financial_state', '=', 'done'), ('state','=', 'done')]}"
+                                options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"
+                                class="oe_inline" style="min-width: 25% !important;margin-right:5px !important; "
+                            />
+                            <field name="financial_state" class="oe_inline mt8 o_state pending" readonly="1" style="min-width: 10% !important; "
+                            attrs="{'invisible' : [('financial_state', '!=', 'pending')]}"
+                            />
+                            <field name="financial_state" class="oe_inline mt8 o_state done" readonly="1" style="min-width: 10% !important; "
+                            attrs="{'invisible' : [('financial_state', '!=', 'done')]}"
+                            />
+                            <field name="financial_state" class="oe_inline mt8 o_state hold" readonly="1" style="min-width: 10% !important; "
+                            attrs="{'invisible' : [('financial_state', '!=', 'hold')]}"
+                            />
+                            <field name="financial_state" class="oe_inline mt8 o_state cancelled" readonly="1" style="min-width: 10% !important; "
+                            attrs="{'invisible' : [('financial_state', '!=', 'cancelled')]}"
+                            />
+                            <field name="financial_approved_date"  class="oe_inline mt8" readonly="1" style="min-width: 10% !important;margin-right:5px !important; "/>
+                            <br/>
+                            
+                            <label for="management_manager" style="width: 14%;" />
+                            <field name="management_manager"
+                                attrs="{'readonly': ['|', ('management_state', '=', 'done'), ('state','=', 'done')]}"
+                                options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"
+                                class="oe_inline" style="min-width: 25% !important;margin-right:5px !important; "
+                            />
+                            <field name="management_state" class="oe_inline mt8 o_state pending" readonly="1" style="min-width: 10% !important; "
+                            attrs="{'invisible' : [('management_state', '!=', 'pending')]}"
+                            />
+                            <field name="management_state" class="oe_inline mt8 o_state hold" readonly="1" style="min-width: 10% !important; "
+                            attrs="{'invisible' : [('management_state', '!=', 'hold')]}"
+                            />
+                            <field name="management_state" class="oe_inline mt8 o_state done" readonly="1" style="min-width: 10% !important; "
+                            attrs="{'invisible' : [('management_state', '!=', 'done')]}"
+                            />
+                            <field name="management_state" class="oe_inline mt8 o_state cancelled" readonly="1" style="min-width: 10% !important; "
+                            attrs="{'invisible' : [('management_state', '!=', 'cancelled')]}"
+                            />
+                            <field name="management_approved_date"  class="oe_inline mt8" readonly="1" style="min-width: 10% !important; "/>
+                            <br/>
+                    </div>
+                    <div>
+                        <div class="row" attrs="{'invisible': ['|',
+                            ('is_tec_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'technical_approval')
+                            ]}">
+                            <group>
+                                <field name="comments" attrs="{'invisible': ['|',
+                                    ('is_tec_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'technical_approval')
+                                    ]}" />
+                            </group>
+                            <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                                <button string="On Hold" type="object" name="set_state_hold" class="oe_highlight" />
+                            </div>
+                            <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                                <button string="Rejected" type="object" name="set_state_cancel" class="oe_highlight" />
+                            </div>
+                            <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                                <button string="Approved and Next" type="object" name="set_state_approved" class="oe_highlight" />
+                            </div>
+                        </div>
+                        <div class="row" attrs="{'invisible': ['|',
+                            ('is_com_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'commercial_approval')
+                            ]}">
+                            <group>
+                                <field name="comments" attrs="{'invisible': ['|',
+                                ('is_com_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'commercial_approval')
+                                ]}" />
+                            </group>
+                            <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                                <button string="On Hold" type="object" name="set_state_hold" class="oe_highlight" />
+                            </div>
+                            <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                                <button string="Rejected" type="object" name="set_state_cancel" class="oe_highlight" />
+                            </div>
+                            <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                                <button string="Approved and Next" type="object" name="set_state_approved" class="oe_highlight" />
+                            </div>
+                        </div>
+                        <div class="row" attrs="{'invisible': ['|',
+                            ('is_fin_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'finance_approval')
+                            ]}" >
+                            <group>
+                                <field name="comments" attrs="{'invisible': ['|',
+                                ('is_fin_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'finance_approval')
+                                ]}" />
+                            </group>
+                            <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                                <button string="On Hold" type="object" name="set_state_hold" class="oe_highlight" />
+                            </div>
+                            <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                                <button string="Rejected" type="object" name="set_state_cancel" class="oe_highlight" />
+                            </div>
+                            <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                                <button string="Approved and Next" type="object" name="set_state_approved" class="oe_highlight" />
+                            </div>
+                        </div>
+                        <div class="row" attrs="{'invisible': ['|',
+                            ('is_mgt_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'management_approval')
+                            ]}">
+                            <group>
+                                <field name="comments" attrs="{'invisible': ['|',
+                                ('is_mgt_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'management_approval')
+                                ]}" />
+                            </group>
+                            <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                                <button string="On Hold" type="object" name="set_state_hold" class="oe_highlight" />
+                            </div>
+                            <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                                <button string="Rejected" type="object" name="set_state_cancel" class="oe_highlight" />
+                            </div>
+                            <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                                <button string="Approved and Next" type="object" name="set_state_approved" class="oe_highlight" />
+                            </div>
+                        </div>
+                    </div>
+                </sheet>
+                <div class="oe_chatter">
+                      <field name="message_follower_ids" widget="mail_followers"/>
+                      <field name="message_ids" widget="mail_thread"/>
+                 </div>
+            </form>
+        </field>
+    </record>
+        
+    <record id="view_purchase_project_boq_tree" model="ir.ui.view">
+        <field name="name">purchase.project.boq.tree</field>
+        <field name="model">purchase.project.boq</field>
+        <field name="arch" type="xml">
+            <tree string="BOQs">
+                <field name="name"/>
+                <field name="project_id" />
+                <field name="boq_manager_id" />
+                <field name="boq_incharge_id" />
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="create_date" string="Date of Originaiton"/>
+                <field name="approved_date" string="Date of Approval"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_purchase_project_boq_tree" model="ir.actions.act_window">
+        <field name="name">BOQs</field>
+        <field name="res_model">purchase.project.boq</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to start a new BOQ.
+          </p>
+        </field>
+    </record>
+    <menuitem
+        id="menu_action_purchase_project_boq_tree"
+        action="action_purchase_project_boq_tree"
+        parent="capex_procurement.app_menu_purchase_project"
+        groups="base.group_user"
+        name="BOQs"
+        sequence="2"
+    />
+</odoo>

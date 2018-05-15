@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_capex_project_pac_user,capex_project_pac.user,model_purchase_project_pac,capex_procurement.group_user_capex_project_only,1,0,0,0
+access_capex_project_pac_all,capex_manager.all.access,model_purchase_project_pac,capex_procurement.group_user_all_capex_projects,1,1,1,0
+access_capex_project_pac_manager,capex_manager.manager,model_purchase_project_pac,capex_procurement.group_capex_project_manager,1,1,1,1

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <record id="view_purchase_order_form" model="ir.ui.view">
+        <field name="name">purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="priority">22</field>
+        <field name="inherit_id"
+               ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="payment_schedule" string="Payment Schedule">
+                    <label for="payment_schedule_ids" />
+                    <field name="payment_schedule_ids" context="{'default_order_id': active_id}" attrs="{'readonly': [('state', 'in', ['purchase', 'done'])]}">
+                        <tree editable="bottom">
+                            <field name="name" />
+                            <field name="date" />
+                            <field name="percentage" />
+                            <field name="order_id" invisible="1"/>
+                        </tree>
+                    </field>
+                    <group>
+                        <field name="update_on" class="oe_inline" readonly="1"/>
+                        <field name="update_by" class="oe_inline" readonly="1"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

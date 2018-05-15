@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_office_system_form" model="ir.ui.view">
+        <field name="name">office.system.form</field>
+        <field name="model">office.system</field>
+        <field name="arch" type="xml">
+            <form string="CAPEX System">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_office_system_tree" model="ir.ui.view">
+        <field name="name">office.system.tree</field>
+        <field name="model">office.system</field>
+        <field name="arch" type="xml">
+            <tree string="CAPEX System" editable="top">
+                <field name="name" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_office_system_search" model="ir.ui.view">
+        <field name="name">office.system.search</field>
+        <field name="model">office.system</field>
+        <field name="arch" type="xml">
+            <search string="Search CAPEX System">
+                <field name="name" />
+            </search>
+        </field>
+    </record>
+    <record id="action_office_system_tree" model="ir.actions.act_window">
+        <field name="name">System</field>
+        <field name="res_model">office.system</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to start a new CAPEX System.
+          </p>
+        </field>
+    </record>
+
+   <menuitem
+        id="menu_action_office_system_tree"
+        action="action_office_system_tree"
+        parent="base.menu_users"
+        groups="base.group_user"
+        sequence="11"
+    />
+
+    <record id="view_purchase_project_form" model="ir.ui.view">
+        <field name="name">purchase.project.form</field>
+        <field name="model">purchase.project</field>
+        <field name="priority">22</field>
+        <field name="inherit_id"
+               ref="capex_procurement.view_purchase_project_form"/>
+        <field name="arch" type="xml">
+            <field name="create_uid" position="before">
+                <field name="system_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_purchase_project_boq_form" model="ir.ui.view">
+        <field name="name">purchase.project.boq.form</field>
+        <field name="model">purchase.project.boq</field>
+        <field name="priority">22</field>
+        <field name="inherit_id"
+               ref="capex_procurement.view_purchase_project_boq_form"/>
+        <field name="arch" type="xml">
+            <field name="boq_incharge_id" position="after">
+                <field name="system_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_purchase_requisition_form" model="ir.ui.view">
+        <field name="name">purchase.requisition.form</field>
+        <field name="model">purchase.requisition</field>
+        <field name="priority">22</field>
+        <field name="inherit_id"
+               ref="purchase_requisition.view_purchase_requisition_form"/>
+        <field name="arch" type="xml">
+            <field name="boq_id" position="after">
+                <field name="system_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="purchase_order_form" model="ir.ui.view">
+        <field name="name">purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="priority">22</field>
+        <field name="inherit_id"
+               ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <field name="requisition_id" position="after">
+                <field name="system_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>
+

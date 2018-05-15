@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hse_observation_form" model="ir.ui.view">
+        <field name="name">hse.observation.form</field>
+        <field name="model">hse.observation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="is_assign" invisible="1"/>
+                    <button type="object" string="Submit For Initial Investigation" name="submit_initial_investigation" class="oe_highlight"
+                    attrs="{'invisible': [('state','!=', 'draft')]}"/>
+                    <button type="object" string="Submit For Further Investigation" name="submit_further_investigation" class="oe_highlight"
+                    attrs="{'invisible': ['|',('state','!=', 'initial_investigation'),('risk_level','=','low')]}" groups="hse_observation.group_hse_observation_manager"/>
+                    <button type="object" string="Close" name="click_to_close" class="oe_highlight" states="further_investigation,initial_investigation"
+                    groups="hse_observation.group_hse_observation_manager"/>
+                    <button type="object" string="Assign to me" name="click_to_assign" class="oe_highlight"
+                    attrs="{'invisible': ['|', ('state','!=', 'initial_investigation'), ('is_assign', '=', True)]}" groups="hse_observation.group_hse_observation_manager"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box" attrs="{'invisible':[('state','=','draft')]}">
+                        <button  class="oe_stat_button" name="activity_tree_view" type="object" icon="fa-calendar">
+                            <field string="Corrective Actions" name="total_activity" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Name" />
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="incident_report_desc" string="Incident Description" placeholder="Please Describe the Incident Reported" groups="hse_observation.group_hse_observation_manager" attrs="{'required' : [('state','=','initial_investigation')]}"/>
+                    </group>
+                    <notebook>
+                        <page name="information" string="HSE Observation">
+                            <group>
+                                <group>
+                                    <field name = "create_by" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}" />
+                                    <field name = "created_date_time" />
+                                    <field name = "operating_unit_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"  attrs="{'readonly': [('state','!=', 'draft')]}"/>
+                                    <field name = "department_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"  attrs="{'readonly': [('state','!=', 'draft')]}"/>
+                                    <field name = "date_of_incident" attrs="{'readonly': [('state','!=', 'draft')]}"/>
+                                </group>
+                                <group>
+                                    <field name = "full_name_observer" attrs="{'readonly': [('state','!=', 'draft')]}"/>
+                                    <field name = "position" attrs="{'readonly': [('state','!=', 'draft')]}"/>
+                                    <field name = "company_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}" attrs="{'readonly': [('state','!=', 'draft')]}"/>
+                                    <field name = "location_on_site" attrs="{'readonly': [('state','!=', 'draft')]}"/>
+                                    <!-- <field name = "equipment_involved" attrs="{'readonly': [('state','!=', 'draft')]}"/> -->
+                                </group>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name = "observation_msg" attrs="{'readonly': [('state','!=', 'draft')]}"/>
+                                </group>
+                                <group>
+                                    <field nolabel="1" name = "attachment_ids" context="{'default_observation_id': active_id, 'default_res_model': 'hse.observation'}" attrs="{'readonly': [('state','!=', 'draft')]}">
+                                        <tree editable="bottom">
+                                            <field string="Attachment" name="datas" filename="datas_fname" attrs="{'invisible':[('type','=','url')]}" widget="binary"/>
+                                            <field name="datas_fname" invisible="1" attrs="{'invisible':[('type','=','url')]}" class="oe_inline oe_right"/>
+                                            <field name="name" string="Description"/>
+                                            <field name="type" invisible="1"/>
+                                            <field name="observation_id" invisible="1"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="initial_investigation" string="Initial Investigation" groups="hse_observation.group_hse_observation_manager">
+                            <group>
+                                <group>
+                                    <field name = "officer_id" readonly="1" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}" />
+                                    <field name = "officer_datetime" readonly="1"/>
+                                    <field name = "classification_id" attrs="{'readonly': [('state','!=', 'initial_investigation')]}" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}" />
+                                </group>
+                                <group>
+                                    <!-- <field name = "risk_id" attrs="{'readonly': [('state','!=', 'initial_investigation')]}" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}" /> -->
+                                    <field name = "risk_level" attrs="{'readonly': [('state','!=', 'initial_investigation')],'required': [('state','=', 'initial_investigation')]}" />
+                                    <field name="equipment_id" attrs="{'readonly': [('state','!=', 'initial_investigation')]}" widget="many2many_tags"/>
+                                    <field name="corrective_acction" attrs="{'readonly': [('state','!=', 'initial_investigation')]}"/>
+                                </group>
+
+                            </group>
+                            <!-- <field name="investigation_ids" attrs="{'readonly': [('state','!=', 'initial_investigation')]}">
+                                <tree editable="bottom">
+                                    <field name = "schedule_datetime"/>
+                                    <field name = "name" />
+                                    <field name = "assign_to"  widget="many2many_tags" options="{'no_create_edit': True, 'no_create':True}"/>
+                                    <field name = "target_date"/>
+                                    <field name = "actual_date"/>
+                                    <field name = "observation_id" invisible="1"/>
+                                </tree>
+                            </field> -->
+                            <group>
+                                <group>
+                                    <field name = "findings_investigation" attrs="{'readonly': [('state','!=', 'initial_investigation')]}"/>
+                                </group>
+                                <group>
+                                    <field  nolabel="1" name = "investigation_attachment_ids" context="{'default_investigation_id': active_id, 'default_res_model': 'hse.observation'}" attrs="{'readonly': [('state','!=', 'initial_investigation')]}">
+                                        <tree editable="bottom">
+                                            <field string="Attachment" name="datas" filename="datas_fname" attrs="{'invisible':[('type','=','url')]}" widget="binary"/>
+                                            <field name="datas_fname" invisible="1" attrs="{'invisible':[('type','=','url')]}" class="oe_inline oe_right"/>
+                                            <field name="name" string="Description"/>
+                                            <field name="type" invisible="1"/>
+                                            <field name="investigation_id" invisible="1"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="root_cause_analysis" string="Further Investigation" groups="hse_observation.group_hse_observation_manager">
+                            <group>
+                                <!-- <group>
+                                    <field name = "initial_cause" attrs="{'readonly': [('state','!=', 'further_investigation')]}"/>
+                                </group>
+                                <group>
+                                    <field name = "root_cause_id" attrs="{'readonly': [('state','!=', 'further_investigation')]}"/>
+                                </group> -->
+                                <group>
+                                    <field name="initial_cause_id" attrs="{'readonly': [('state','!=', 'further_investigation')]}">
+                                        <tree string="Initial Causes" editable="bottom">
+                                            <field name="name" required="True"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group>
+                                    <field name="root_cause_id" attrs="{'readonly': [('state','!=', 'further_investigation')]}">
+                                        <tree string="Root Causes" editable="bottom">
+                                            <field name="name" required="True"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                
+                                <group>
+                                    <field name="corrective_action_further" attrs="{'readonly': [('state','!=', 'further_investigation')]}"/>
+                                </group>
+                                
+                                <group>
+                                    <field nolabel="1" name="further_investigation_attachment_ids" context="{'default_further_investigation_id': active_id, 'default_res_model': 'hse.observation'}" attrs="{'readonly': [('state','!=', 'further_investigation')]}">
+                                        <tree editable="bottom">
+                                            <field string="Attachment" name="datas" filename="datas_fname" attrs="{'invisible':[('type','=','url')]}" widget="binary"/>
+                                            <field name="datas_fname" invisible="1" attrs="{'invisible':[('type','=','url')]}" class="oe_inline oe_right"/>
+                                            <field name="name" string="Description"/>
+                                            <field name="type" invisible="1"/>
+                                            <field name="further_investigation_id" invisible="1"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="observation_mail_activity_view_tree" model="ir.ui.view">
+        <field name="name">mail.activity.view.tree</field>
+        <field name="model">mail.activity</field>
+        <field name="arch" type="xml">
+            <tree string="Next Activities"
+                    decoration-danger="date_deadline &lt; current_date"
+                    decoration-success="date_deadline == current_date"
+                    default_order="date_deadline" editable="top">
+                <field name="res_name" invisible="1"/>
+                <field name="res_model_id" invisible="1"/>
+                <field name="active" invisible="1"/>
+                <field name="activity_type_id" options="{'no_create': True, 'no_open': True}"/>
+                <field name="summary" string="Task Assigned" required="1" attrs="{'readonly': [('active','=',False)]}"/>
+                <field name="user_id" string="Responsible" attrs="{'readonly': [('active','=',False)]}" options="{'no_create': True, 'no_open': True}"/>
+                <field name="date_deadline" string="Schedule Date" attrs="{'readonly': [('active','=',False)]}"/>
+                <button string="Reschedule" name="action_reschedule_dialog"
+                    type="object" class="btn-primary"
+                    attrs="{'invisible': [('active','=',False)]}" />
+                <button string="Mark as Done" name="action_mark_done"
+                    type="object" class="btn-primary"
+                    attrs="{'invisible': [('active','=',False)]}" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="observation_mail_activity_view_form_popup" model="ir.ui.view">
+        <field name="name">mail.activity.view.form.popup</field>
+        <field name="model">mail.activity</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <form string="Log an Activity">
+                <header>
+                    <field name="active" invisible="1" />
+                    <button string="Reschedule" name="action_reschedule_dialog"
+                            type="object" class="btn-primary"
+                            attrs="{'invisible': [('active','=',False)]}" />
+                     <button string="Mark as Done" name="action_mark_done"
+                        type="object" class="btn-primary"
+                        attrs="{'invisible': [('active','=',False)]}" />
+                </header>
+                <sheet string="Activity">
+                    <group invisible="1">
+                        <field name="activity_category" invisible="1" />
+                        <field name="res_model" invisible="1"/>
+                        <field name="res_model_id" invisible="1"/>
+                        <field name="res_id" invisible="1"/>
+                        <field name="previous_activity_type_id" attrs="{'readonly': [('active','=',False)]}" invisible="1"/>
+                        <field name="has_recommended_activities" attrs="{'readonly': [('active','=',False)]}" invisible="1"/>
+                    </group>
+                    <group attrs="{'invisible': [('has_recommended_activities','=',False)]}">
+                        <div>
+                            <p><strong>Recommended Activities</strong></p>
+                            <field name="recommended_activity_type_id" widget="radio"
+                                domain="[('previous_type_ids', '=', previous_activity_type_id)]"
+                                options="{'horizontal':true}"
+                                nolabel="1"
+                                invisible="1"
+                                attrs="{'readonly': [('active','=',False)]}"/>
+                        </div>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="activity_type_id" required="1" options="{'no_create': True, 'no_open': True}" attrs="{'readonly': [('active','=',False)]}" invisible="1"/>
+                            <field name="summary" string="Description" placeholder="e.g. Discuss proposal" attrs="{'readonly': [('active','=',False)]}"/>
+                        </group>
+                        <group>
+                            <field name="date_deadline" string="Schedule Date" attrs="{'readonly': [('active','=',False)]}"/>
+                            <field name="user_id" string="Responsible" attrs="{'readonly': [('active','=',False)]}"/>
+                        </group>
+                    </group>
+                    <field name="note" placeholder="Log a note..." attrs="{'readonly': [('active','=',False)]}" invisible="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hse_observation_tree" model="ir.ui.view">
+        <field name="name">hse.observation.tree</field>
+        <field name="model">hse.observation</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name = "name"/>
+                <field name = "create_by" />
+                <field name = "created_date_time"/>
+                <field name = "operating_unit_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hse_observation_search" model="ir.ui.view">
+        <field name="name">hse.observation.search</field>
+        <field name="model">hse.observation</field>
+        <field name="arch" type="xml">
+            <search string="Search Observation">
+                <field name="name" string="Name"/>
+                <field name="operating_unit_id" string="Operating Unit"/>
+                <field name="department_id" string="Department"/>
+                <field name="create_by" string="Created By."/>
+                <filter string="My Observation" name="my_observation"
+                        domain="[('create_by', '=', uid)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_create_by" string="Created By" context="{'group_by':'create_by'}"/>
+                    <filter string="Operating Unit" context="{'group_by':'operating_unit_id'}"/>
+                    <filter string="Department" context="{'group_by':'department_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_hse_classification_tree" model="ir.ui.view">
+        <field name="name">hse.classification.tree</field>
+        <field name="model">hse.classification</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name = "name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hse_risk_tree" model="ir.ui.view">
+        <field name="name">hse.risk.tree</field>
+        <field name="model">hse.risk</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name = "name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hse_analysis_tree" model="ir.ui.view">
+        <field name="name">hse.analysis.tree</field>
+        <field name="model">hse.analysis</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name = "name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hse_root_cause_tree" model="ir.ui.view">
+        <field name="name">hse.root.cause.tree</field>
+        <field name="model">hse.root.cause</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name = "name"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="view_hse_equipment_tree" model="ir.ui.view">
+        <field name="name">hse.equipment.tree</field>
+        <field name="model">hse.equipment</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name = "name"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="view_hse_activity_type_tree" model="ir.ui.view">
+        <field name="name">mail.activity.type.tree.modified</field>
+        <field name="model">mail.activity.type</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_hse_observation" model="ir.actions.act_window">
+        <field name="name">HSE Observation/Non-Compliance Report</field>
+        <field name="res_model">hse.observation</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_hse_observation_tree" />
+        <field name="search_view_id" ref="view_hse_observation_search" />
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to start a new Observation.
+          </p>
+        </field>
+    </record>
+
+    <record id="action_hse_analysis" model="ir.actions.act_window">
+        <field name="name">Analysis</field>
+        <field name="res_model">hse.analysis</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_hse_analysis_tree" />
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to start a new Analysis.
+          </p>
+        </field>
+    </record>
+
+    <record id="action_hse_root_cause" model="ir.actions.act_window">
+        <field name="name">Root Cause</field>
+        <field name="res_model">hse.root.cause</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_hse_root_cause_tree" />
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to start a new Root Cause.
+          </p>
+        </field>
+    </record>
+
+    <record id="action_hse_classification" model="ir.actions.act_window">
+        <field name="name">Classification</field>
+        <field name="res_model">hse.classification</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_hse_classification_tree" />
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to start a new Classification.
+          </p>
+        </field>
+    </record>
+
+    <record id="action_hse_risk" model="ir.actions.act_window">
+        <field name="name">Risk</field>
+        <field name="res_model">hse.risk</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_hse_risk_tree" />
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to start a new Risk.
+          </p>
+        </field>
+    </record>
+    
+    <record id="action_hse_equipment" model="ir.actions.act_window">
+        <field name="name">Equipments</field>
+        <field name="res_model">hse.equipment</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_hse_equipment_tree" />
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to start a new Equipment.
+          </p>
+        </field>
+    </record>
+    
+    <record id="action_hse_activity_type" model="ir.actions.act_window">
+        <field name="name">Activity Types</field>
+        <field name="res_model">mail.activity.type</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_hse_activity_type_tree" />
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to start a new Activity Type.
+          </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_hse_observation"
+        web_icon="hse_observation,static/description/icon.png"
+        sequence="11"
+        name="HSE"
+        groups="hse_observation.group_hse_observation_user"
+    />
+
+    <menuitem action="action_hse_observation"
+        id="menu_action_hse_observation"
+        parent="menu_hse_observation"
+        sequence="1"
+        name="Observation"
+        groups="hse_observation.group_hse_observation_user"
+    />
+
+    <menuitem action="action_hse_analysis"
+        id="menu_action_hse_analysis"
+        parent="menu_hse_observation"
+        sequence="2"
+        name="Analysis"
+        groups="hse_observation.group_hse_observation_user"
+    />
+
+    <menuitem action="action_hse_root_cause"
+        id="menu_action_hse_root_cause"
+        parent="menu_hse_observation"
+        sequence="3"
+        name="Root Cause"
+        groups="hse_observation.group_hse_observation_user"
+    />
+
+    <menuitem action="action_hse_classification"
+        id="menu_action_hse_classification"
+        parent="menu_hse_observation"
+        sequence="3"
+        name="Classification"
+        groups="hse_observation.group_hse_observation_user"
+    />
+
+    <menuitem action="action_hse_risk"
+        id="menu_action_hse_risk"
+        parent="menu_hse_observation"
+        sequence="3"
+        name="Risk"
+        groups="hse_observation.group_hse_observation_user"
+    />
+    
+    <menuitem action="action_hse_equipment"
+        id="menu_action_hse_equipment"
+        parent="menu_hse_observation"
+        sequence="4"
+        name="Equipments"
+        groups="hse_observation.group_hse_observation_user"
+    />
+    
+    <menuitem action="action_hse_activity_type"
+        id="menu_action_hse_activity_type"
+        parent="menu_hse_observation"
+        sequence="4"
+        name="Activity Type"
+        groups="hse_observation.group_hse_observation_user"
+    />
+
+</odoo>

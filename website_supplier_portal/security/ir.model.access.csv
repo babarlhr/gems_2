@@ -1,0 +1,42 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_purchase_order_user,purchase.order.user,purchase.model_purchase_order,base.group_portal,1,1,1,1
+access_purchase_order_line_user,purchase.order.line user,purchase.model_purchase_order_line,base.group_portal,1,1,1,1
+access_purchase_order_line_portal_user,purchase.order.line.portal,purchase.model_purchase_order_line,base.group_portal,1,1,1,1
+access_stock_location_purchase_user,stock.location,stock.model_stock_location,base.group_portal,1,0,0,0
+access_stock_warehouse_purchase_user,stock.warehouse,stock.model_stock_warehouse,base.group_portal,1,0,0,0
+access_stock_picking_purchase_user,stock.picking,stock.model_stock_picking,base.group_portal,1,1,1,0
+access_stock_move_purchase_user,stock.move,stock.model_stock_move,base.group_portal,1,1,1,0
+access_account_tax_purchase_user,account.tax,account.model_account_tax,base.group_portal,1,0,0,0
+access_report_purchase_order_user,purchase.report,purchase.model_purchase_report,base.group_portal,1,0,0,0
+access_report_purchase_order_user_portal,purchase.report user,purchase.model_purchase_report,base.group_portal,1,0,0,0
+access_stock_location_purchase_user_manager_portal,stock.location,stock.model_stock_location,base.group_portal,1,0,0,0
+access_stock_warehouse_purchase_user_manager_protal,stock.warehouse,stock.model_stock_warehouse,base.group_portal,1,0,0,0
+access_account_tax_purchase_user_manager_protal,account.tax,account.model_account_tax,base.group_portal,1,0,0,0
+access_product_product_purchase_user_protal,product.product.purchase.user,product.model_product_product,base.group_portal,1,0,0,0
+access_product_product_purchase_manager_protal,product.product purchase_manager,product.model_product_product,base.group_portal,1,0,0,0
+access_product_template_purchase_user_portal,product.template purchase_user,product.model_product_template,base.group_portal,1,0,0,0
+access_product_template_purchase_manager_user,product.template purchase_manager,product.model_product_template,base.group_portal,1,0,0,0
+access_account_invoice_purchase_protal,account_invoice purchase,account.model_account_invoice,base.group_portal,1,1,1,0
+access_account_invoice_line_purchase_protal,account_invoice.line purchase,account.model_account_invoice_line,base.group_portal,1,1,1,0
+access_account_invoice_purchase_manager,account_invoice purchase manager,account.model_account_invoice,base.group_portal,1,0,0,0
+access_account_invoice_line_purchase_manager_portal,account_invoice.line purchase manager,account.model_account_invoice_line,base.group_portal,1,0,0,0
+access_account_invoice_tax_purchase_proal,account_invoice.tax purchase,account.model_account_invoice_tax,base.group_portal,1,1,1,0
+access_account_fiscal_position_purchase_user_poral,account.fiscal.position purchase,account.model_account_fiscal_position,base.group_portal,1,0,0,0
+access_res_partner_purchase_user_portal,res.partner purchase,base.model_res_partner,base.group_portal,1,0,0,0
+access_account_journal_portal,account.journal,account.model_account_journal,base.group_portal,1,0,0,0
+access_account_journal_manager_poratal,account.journal,account.model_account_journal,base.group_portal,1,0,0,0
+access_account_move_portal,account.move,account.model_account_move,base.group_portal,1,0,0,0
+access_account_move_line_portal,account.move.line,account.model_account_move_line,base.group_portal,1,0,0,0
+access_account_analytic_line_portal,account.analytic.line,account.model_account_analytic_line,base.group_portal,1,0,0,0
+access_product_category_purchase_man_portal,product.category.purchase_manager,product.model_product_category,base.group_portal,1,0,0,0
+access_product_packaging_purchase_mr_portal,product.packaging purchase_manager,product.model_product_packaging,base.group_portal,1,0,0,0
+access_account_account_purchase_manager_portal,account.account purchase manager,account.model_account_account,base.group_portal,1,0,0,0
+access_account_journal_purchase_manager_portal,account.journal purchase manager,account.model_account_journal,base.group_portal,1,0,0,0
+access_stock_location_purchase_manager_portal,stock.location purchase manager,stock.model_stock_location,base.group_portal,1,0,0,0
+access_stock_warehouse_orderpoint_manager_portal,stock.warehouse.orderpoint,stock.model_stock_warehouse_orderpoint,base.group_portal,1,0,0,0
+access_stock_warehouse_orderpoint_manager_portla,stock.warehouse.orderpoint,stock.model_stock_warehouse_orderpoint,base.group_portal,1,0,0,0
+access_product_price_history_purchase_user_portal,prices.history purchase user,product.model_product_price_history,base.group_portal,1,0,0,0
+access_purchase_manager_portal,product.model_product_uom_categ,product.model_product_uom_categ,base.group_portal,1,0,0,0
+access_ir_ui_menu_group_user_portal,ir_ui_menu group_user,base.model_ir_ui_menu,base.group_portal,1,0,0,0
+access_ir_model_group_user,ir_model group_user,base.model_ir_model,base.group_portal,1,0,0,0
+access_ product_uom_group_user, product.uom group_user,product.model_product_uom,base.group_portal,1,0,0,0

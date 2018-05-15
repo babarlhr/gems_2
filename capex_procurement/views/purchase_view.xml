@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_purchase_order_form" model="ir.ui.view">
+        <field name="name">purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="priority">20</field>
+        <field name="inherit_id"
+               ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="project_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
+                <field name="boq_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
+            </field>
+
+            <field name="partner_ref" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="company_id" position="before">
+                <field name="operating_unit_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
+                <field name="operating_unit_div_id" readonly="1"/>
+            </field>
+            <field name="date_order" position="attributes">
+                <attribute name="string">RFQ Date</attribute>
+            </field>
+            <field name="requisition_id" position="attributes">
+                <attribute name="string">Tender</attribute>
+                <attribute name="options">{'no_create_edit': True, 'no_create':True, 'no_open': True}</attribute>
+            </field>
+            <field name="qty_received" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="qty_invoiced" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="taxes_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="price_subtotal" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="date_planned" position="attributes">
+                <attribute name="invisible">1</attribute>
+                <attribute name="required">0</attribute>
+            </field>
+            <field name="product_uom" position="attributes">
+                <attribute name="string">UOM</attribute>
+            </field>
+            <field name="product_id" position="before">
+                <field name="product_categ_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
+                <field name="boq_line_id" invisible="1"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="purchase_requisition.action_purchase_requisition_list">
+        <field name="name">Request for Quotations</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('requisition_id','=',active_id), ('state', 'not in', ['purchase', 'cancel', 'done'])]</field>
+        <field name="context">{"default_requisition_id":active_id}</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_purchase_requisition_list_order">
+        <field name="name">Purchase Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('requisition_id','=',active_id), ('state', 'in', ['purchase', 'done'])]</field>
+        <field name="context">{"default_requisition_id":active_id}</field>
+    </record>
+
+    <record id="view_purchase_requisition_form" model="ir.ui.view">
+        <field name="name">purchase.requisition.form</field>
+        <field name="model">purchase.requisition</field>
+        <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='%(purchase_requisition.action_purchase_requisition_to_so)d'][1]" position="attributes">
+                <attribute name="string">NEW RFQ</attribute>
+            </xpath>
+            <xpath expr="//button[@name='%(purchase_requisition.action_purchase_requisition_to_so)d'][last()]" position="attributes">
+                <attribute name="string">NEW RFQ</attribute>
+            </xpath>
+            <field name="order_count" position="attributes">
+                <attribute name="string">RFQs</attribute>
+            </field>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                 <button name="%(action_purchase_requisition_list_order)d" type="action" class="oe_stat_button" icon="fa-list-alt"
+                        attrs="{'invisible': [('state', '=', 'draft')]}">
+                <field name="purchase_order_count" widget="statinfo" string="Orders"/>
+            </button>
+            </xpath>
+            <xpath expr="//div[@class='pull-left']" position="replace">
+                <div class="pull-left">
+                    <h1>
+                        <label for="name" string="TENDERING" class="oe_edit_only oe_inline" style="font-size: 32px;"/>
+                    </h1>
+                    <h1>
+                        <field name="name" string="Tender Reference" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                    </h1>
+                </div>
+            </xpath>
+            <xpath expr="//form" position="attributes">
+                <attribute name="string">Tender</attribute>
+            </xpath>
+            <field name="vendor_id" position="after">
+                <field name="project_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
+                <field name="boq_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
+            </field>
+            <field name="company_id" position="replace" />
+            <field name="origin" position="after">
+                <field name="operating_unit_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
+                <field name="operating_unit_div_id" readonly="1"/>
+                <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+            </field>
+            <field name="date_end" position="attributes">
+                <attribute name="string">Tender Deadline</attribute>
+            </field>
+            <field name="user_id" position="attributes">
+                <attribute name="options">{'no_create_edit': True, 'no_create':True, 'no_open': True}</attribute>
+            </field>
+            <field name="user_id" position="after">
+                <field name="title" />
+            </field>
+            <field name="type_id" position="attributes">
+                <attribute name="string">Tender Type</attribute>
+            </field>
+            <field name="ordering_date" position="attributes">
+                <attribute name="string">Tender Date</attribute>
+            </field>
+            <field name="schedule_date" position="attributes">
+                <attribute name="string">Deliver By</attribute>
+            </field>
+            <field name="vendor_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="line_ids" position="replace">
+                <field name="line_ids">
+                    <tree string="Products" editable="bottom">
+                        <field name="product_categ_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
+                        <field name="supply_type"/>
+                        <field name="product_id" context="{'default_sale_ok': False, 'default_categ_id': product_categ_id}"/>
+                        <field name="name" />
+                        <field name="product_uom_id" groups="product.group_uom" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}" readonly="1" string="UOM"/>
+                        <field name="supply_desc"/>
+                        <field name="product_qty" />
+                        <field name="qty_ordered" invisible="1"/>
+                        <field name="schedule_date" groups="base.group_no_one" invisible="1"/>
+                        <field name="account_analytic_id" groups="purchase.group_analytic_accounting"/>
+                        <field name="price_unit" invisible="1"/>
+                        <field name="boq_line_id" invisible="1"/>
+                    </tree>
+                    <form string="Products">
+                        <group>
+                            <field name="product_categ_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
+                            <field name="supply_type"/>
+                            <field name="product_id" context="{'default_sale_ok': False}"/>
+                            <field name="name" />
+                            <field name="product_uom_id" groups="product.group_uom" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}" readonly="1"/>
+                            <field name="supply_desc"/>
+                            <field name="product_qty" />
+                            <field name="qty_ordered" invisible="1"/>
+                            <field name="schedule_date" groups="base.group_no_one" invisible="1"/>
+                            <field name="account_analytic_id" groups="purchase.group_analytic_accounting"/>
+                            <field name="price_unit" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                        </group>
+                    </form>
+                </field>
+            </field>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="purchase_requisition.action_purchase_requisition">
+        <field name="name">Tender</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to start a new tender.
+          </p><p>
+            Example of tenders include call blanket orders.
+          </p><p>
+            In a call for tenders, you can record the products you need to buy
+            and generate the creation of RfQs to vendors. Once the tenders have
+            been registered, you can review and compare them and you can
+            validate some and cancel others.
+          </p><p>
+            For a blanket order, you can record an tender for a specifc period
+            (e.g. a year) and you order products within this tender, benefiting
+            from the negociated prices.
+          </p>
+        </field>
+    </record>
+    <menuitem
+        id="purchase_requisition.menu_purchase_requisition_pro_mgt"
+        string="Tender"
+        sequence="10"
+        parent="purchase.menu_procurement_management"
+        action="purchase_requisition.action_purchase_requisition"/>
+
+    <menuitem
+        id="capex_menu_purchase_requisition_pro_mgt"
+        parent="capex_procurement.app_menu_purchase_project"
+        action="purchase_requisition.action_purchase_requisition"
+        groups="base.group_user"
+        string="Tender"
+        sequence="3"
+        />
+
+    <record id="purchase.purchase_form_action" model="ir.actions.act_window">
+        <field name="name">POs</field>
+    </record>
+
+    <record id="purchase.purchase_rfq" model="ir.actions.act_window">
+        <field name="name">RFQs</field>
+    </record>
+
+    <menuitem action="purchase.purchase_rfq"
+        id="capex_menu_purchase_rfq"
+        parent="capex_procurement.app_menu_purchase_project"
+        string="RFQs"
+        groups="base.group_user"
+        sequence="4"/>
+
+    <menuitem action="purchase.purchase_form_action"
+        id="capex_menu_purchase_form_action"
+        parent="capex_procurement.app_menu_purchase_project"
+        string="POs"
+        groups="base.group_user"
+        sequence="6"/>
+
+    <record id="view_purchase_requisition_filter_inherits" model="ir.ui.view">
+         <field name="name">purchase.requisition.list.select</field>
+        <field name="model">purchase.requisition</field>
+        <field name="inherit_id"
+               ref="purchase_requisition.view_purchase_requisition_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="attributes">
+                <attribute name="string">Tender</attribute>
+            </xpath>
+            <field name="name" position="replace">
+                <field name="name" string="Tender" filter_domain="['|', ('name','ilike',self), ('origin','ilike',self)]"/>
+            </field>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="view_purchase_requisition_tree_inherits">
+        <field name="name">purchase.requisition.tree</field>
+        <field name="model">purchase.requisition</field>
+        <field name="inherit_id"
+               ref="purchase_requisition.view_purchase_requisition_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="string">Tender</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

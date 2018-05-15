@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <record id="view_product_template_form_inherit_gems_ie" model="ir.ui.view" >
+            <field name="name">product.template.form.inherit.gems.ie</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="priority">60</field>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page[1]" position="before">
+                    <page string="Product Specs">
+                        <notebook>
+                        <page string="General">
+                            <group>
+                                <field name="primary_use"/>
+                            </group>
+                            <group string="MOC">
+                                <field name="moc_primary"/>
+                                <field name="moc_secondary"/>
+                                <field name="moc_details"/>
+                                <field name="general_weight"/>
+                            </group>
+                            <group string="Dimensions">
+                                <field name="inner_diameter"/>
+                                <field name="outer_diameter"/>
+                                <field name="general_length"/>
+                                <field name="general_width"/>
+                                <field name="general_height"/>
+                            </group>
+            
+                            <group string="Connectors">
+                               <field name="connection_type"/>
+                               <field name="connection_moc"/>
+                            </group>
+                            <group string="Reducer/Expansion">
+                               <field name="reducer_from"/>
+                               <field name="reducer_to"/>
+                               <field name="general_specs"/>
+                            </group>
+                        </page>
+
+                        <page string="Process">
+                            <group>
+                                <field name="feed_composition"/>
+                                <field name="qin_phase"/>
+                            </group>
+                            <group string="Flow(Q)">
+                                <field name="flow_operating"/>
+                                <field name="flow_max"/>
+                                <field name="flow_min"/>
+                            </group>
+                            <group string="Pressure(P)">
+                                <field name="pressure_operating"/>
+                                <field name="pressure_max"/>
+                                <field name="pressure_min"/>
+                                <field name="cont_pressure_rating"/>
+                            </group>
+                            <group string="Operation">
+                                <field name="motors"/>
+                                <field name="motor_desc"/>
+                                <field name="valves"/>
+                                <field name="valves_desc"/>
+                                <field name="process_specs"/>
+                            </group>
+                        </page>
+                            
+                        <page string="Electrical">
+                            <group string="Power">
+                                <field name="power"/>
+                                <field name="power_actual_kw"/>
+                                <field name="power_actual_kva"/>
+                                <field name="power_rating_volt"/>
+                                <field name="power_rating_phase"/>
+                                <field name="power_rating_hertz"/>
+                            </group>
+                            <group>
+                                <field name="cooling_specs"/>
+                                <field name="atex_rating"/>
+                            </group>
+                            <group string="Cables">
+                                <field name="cable_conn_size"/>
+                                <field name="cable_gland_spec"/>
+                                <field name="cable_spec"/>
+                                <field name="cable_length"/>
+                                <field name="cable_armoured"/>
+                                <field name="cable_description"/>
+                                <field name="power_specs"/>
+                            </group>
+                        </page>
+
+                        <page string="Instrumentation &amp;Control">
+                            <group>
+                                <field name="ic_measure_param"/>
+                                <field name="ic_control_type"/>
+                            </group>
+                            <group string="Instrument">
+                                <field name="ic_communication"/>
+                                <field name="ic_communication_desc"/>
+                                <field name="ic_material_interface"/>
+                                <field name="ic_material_interface_desc"/>
+                                <field name="ic_power_supply"/>
+                                <field name="ic_specs"/>
+                            </group>
+                        </page>
+
+                        <page string="Heavy Equipment">
+                        </page>
+
+                        <page string="Packaging">
+                            <group>
+                                <field name="package_type"/>
+                                <field name="package_desc"/>
+                            </group>
+                            <group string="Dimensions">
+                                <field name="package_length"/>
+                                <field name="package_width"/>
+                                <field name="package_height"/>
+                                <field name="package_weight"/>
+                                <field name="package_specs"/>
+                            </group>
+                        </page>
+                    </notebook>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+</odoo>

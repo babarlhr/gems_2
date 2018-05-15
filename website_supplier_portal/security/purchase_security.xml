@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="portal_purchase_order_user_rule_portal" model="ir.rule">
+        <field name="name">Portal Purchase Orders access</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="domain_force">['|', ('message_partner_ids','child_of',[user.commercial_partner_id.id]), ('partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_unlink" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_create" eval="1"/>
+    </record>
+
+    <record id="portal_purchase_order_line_rule_portal" model="ir.rule">
+        <field name="name">Portal Purhcase Orders Line access</field>
+        <field name="model_id" ref="purchase.model_purchase_order_line"/>
+        <field name="domain_force">['|', ('order_id.message_partner_ids','child_of',[user.commercial_partner_id.id]), ('partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_unlink" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_create" eval="1"/>
+    </record>
+
+    <record id="portal_partner_rule_portal" model="ir.rule">
+        <field name="name">Portal partner access</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="domain_force">[('id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_unlink" eval="0"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_create" eval="0"/>
+    </record>
+
+    <record id="portal_product_template_rule_portal" model="ir.rule">
+        <field name="name">Portal Product Template access</field>
+        <field name="model_id" ref="product.model_product_template"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_unlink" eval="0"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_create" eval="0"/>
+    </record>
+
+    <record id="portal_product_product_rule_portal" model="ir.rule">
+        <field name="name">Portal Product product access</field>
+        <field name="model_id" ref="product.model_product_product"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal')), (4, ref('base.group_user'))]"/>
+        <field name="perm_unlink" eval="0"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_create" eval="0"/>
+    </record>
+
+    <record id="portal_menu_portal" model="ir.rule">
+        <field name="name">Portal Menu access</field>
+        <field name="model_id" ref="base.model_ir_ui_menu"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_unlink" eval="0"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_create" eval="0"/>
+    </record>
+
+</odoo>

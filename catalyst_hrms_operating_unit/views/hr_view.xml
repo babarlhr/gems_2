@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hr_operating_unit_employee_form_view" model="ir.ui.view">
+        <field name="name">hr.employee.form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='department_id']" position="before">
+                <field name="operating_unit_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
+            </xpath>
+            <xpath expr="//field[@name='department_id']" position="attributes">
+                <attribute name="domain">[('operating_unit_id', '=', operating_unit_id)]</attribute>
+                <attribute name="options">{'no_create_edit': True, 'no_create':True, 'no_open': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='job_id']" position="attributes">
+                <attribute name="domain">[('department_id', '=', department_id)]</attribute>
+                <attribute name="options">{'no_create_edit': True, 'no_create':True, 'no_open': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+     <menuitem
+            action="hr.open_module_tree_department"
+            id="menu_hr_department_tree_unit"
+            parent="base.menu_users"
+            sequence="13"
+            groups="hr.group_hr_user"/>
+
+</odoo>

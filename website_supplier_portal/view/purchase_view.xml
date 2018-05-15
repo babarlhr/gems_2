@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="purchase_order_line_tree_portal" model="ir.ui.view">
+        <field name="name">purchase.order.line.tree</field>
+        <field name="model">purchase.order.line</field>
+        <field name="arch" type="xml">
+            <tree string="Purchase Order Lines" create="false" editable="bottom">
+                <field name="state" invisible="1"/>
+                <field name="order_id" invisible="1"/>
+                <field name="name" readonly="1"/>
+                <field name="qty_initial" readonly="1" />
+                <field name="price_unit" attrs="{'readonly': [('state', 'in', ['purchase', 'done', 'cancel'])]}"/>
+                <field name="qty_quoted" attrs="{'readonly': [('state', 'in', ['purchase', 'done', 'cancel'])]}"/>
+                <field name="price_subtotal" widget="monetary" readonly="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="purchase_rfq_line_portal_line" model="ir.actions.act_window">
+        <field name="name">Orders Lines</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.order.line</field>
+        <field name="domain">[('order_id','=', active_id)]</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="website_supplier_portal.purchase_order_line_tree_portal"/>
+        <field name="search_view_id" ref="purchase.purchase_order_line_search"/>
+    </record>
+
+    <record id="purchase_rfq_line_portal" model="ir.actions.act_window">
+        <field name="name">Orders Lines</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.order.line</field>
+        <field name="domain">[('order_id','=', active_id)]</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="website_supplier_portal.purchase_order_line_tree_portal"/>
+        <field name="search_view_id" ref="purchase.purchase_order_line_search"/>
+    </record>
+
+    <record id="view_purchase_order_portal_tree" model="ir.ui.view">
+        <field name="name">purchase.order.tree</field>
+        <field name="model">purchase.order</field>
+        <field name="arch" type="xml">
+            <tree decoration-bf="message_unread==True" decoration-muted="state=='cancel'" decoration-info="state in ('wait','confirmed')" string="Purchase Order" create="false" edit="false">
+                <field name="message_unread" invisible="1"/>
+                <field name="name" string="Reference"/>
+                <field name="date_order" />
+                <field name="partner_id"/>
+                <field name="origin"/>
+                <field name="amount_untaxed" sum="Total Untaxed amount" string="Untaxed" widget="monetary"/>
+                <field name="amount_total" sum="Total amount" widget="monetary"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="state"/>
+                <field name="invoice_status" invisible="not context.get('show_purchase', True)"/>
+                <button string="Update Price"
+                    name="%(website_supplier_portal.purchase_rfq_line_portal_line)d"
+                    type="action" states="draft,sent,bid"/>
+                <button string="Submit Quote" type="object" name="button_received" states="draft,sent,bid"/>
+                <button string="Show Products"
+                    name="%(website_supplier_portal.purchase_rfq_line_portal_line)d"
+                    type="action" states="purchase,done,cancel"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="purchase_rfq_portal" model="ir.actions.act_window">
+        <field name="name">Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">tree</field>
+        <field name="domain">[('state', 'in', ['purchase', 'done'])]</field>
+        <field name="view_id" ref="website_supplier_portal.view_purchase_order_portal_tree"/>
+        <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a quotation that will be converted into a purchase order. 
+            </p><p>
+                Use this menu to search within your purchase orders by
+                references, vendor, products, etc. For each purchase order,
+                you can track the related discussion with the vendor, control
+                the products received and control the vendor bills.
+            </p>
+        </field>
+    </record>
+
+    <record id="purchase_rfqs_portal" model="ir.actions.act_window">
+        <field name="name">RFQs</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">tree</field>
+        <field name="domain">[('state', 'not in', ['purchase', 'done'])]</field>
+        <field name="view_id" ref="website_supplier_portal.view_purchase_order_portal_tree"/>
+        <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a request for quotation.
+            </p><p>
+                The quotation contains the history of the discussion/negotiation
+                you had with your vendor. Once confirmed, a request for
+                quotation is converted into a purchase order.
+            </p><p>
+                Most propositions of purchase orders are created automatically
+                by Odoo based on inventory needs.
+            </p>
+        </field>
+    </record>
+
+    <menuitem name="RFQs"
+        id="menu_purchase_rfqs_root_portal"
+        groups="base.group_portal"
+        action="website_supplier_portal.purchase_rfqs_portal"
+        web_icon="purchase,static/description/icon.png"
+        sequence="2"/>
+
+    <menuitem name="Orders"
+        id="menu_purchase_root_portal"
+        groups="base.group_portal"
+        action="website_supplier_portal.purchase_rfq_portal"
+        web_icon="purchase,static/description/icon.png"
+        sequence="3"/>
+
+    <menuitem name="Website"
+        id="menu_website_configuration"
+        sequence="1"
+        groups="base.group_portal"
+        action="website.action_website"
+        web_icon="website,static/description/icon.png"/>
+
+    <template id="portal_my_purchase_orders" inherit_id="purchase.portal_my_purchase_orders" name="Portal: My Purchase Orders">
+        <xpath expr="//t[@t-foreach='orders']/tr" position="inside">
+            <td>
+                <a class="btn btn-primary" t-att-href="'/web#action=%s&amp;view_type=list&amp;model=purchase.order.line&amp;active_id=%s' % (%(website_supplier_portal.purchase_rfq_line_portal_line)d, order.id, )">Manage Order</a>
+            </td>
+        </xpath>
+    </template>
+</odoo>

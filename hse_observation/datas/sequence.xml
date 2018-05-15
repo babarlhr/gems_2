@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="seq_hse_observation" model="ir.sequence">
+            <field name="name">HSE Observation</field>
+            <field name="code">hse.observation</field>
+            <field name="prefix">HSE-OBS#</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+
+    <!-- <record model="ir.module.category" id="hse_observation_categ">
+        <field name="name">HSE</field>
+        <field name="description">HSE Management</field>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="group_hse" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="comment">the user will have an access to the HSE Office configuration</field>
+        <field name="category_id" ref="hse_observation_categ"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root'))]"/>
+    </record> -->
+
+</odoo>

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_purchase_order_form" model="ir.ui.view">
+        <field name="name">purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="priority">27</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <button name="button_confirm" states="draft" position="replace"/>
+            <button name="button_confirm" states="sent" position="replace" />
+            <xpath expr="//header" position="inside">
+                <field name="is_app_manager" invisible="1"/>
+                <field name="is_purchase_limit_over" invisible="1"/>
+                <button type="object" string="Confirm Order"
+                    class="oe_highlight" name="button_confirm"
+                    attrs="{'invisible': [('state','not in', ['draft', 'sent'])]}"/>
+                <button type="object" string="SEND FOR APPROVAL"
+                    class="oe_highlight" name="button_sent_to_approve"
+                    attrs="{'invisible': [('state','not in', ['select_manager'])]}"/>
+            </xpath>
+            <button name="button_cancel" position="after">
+                <button name="button_cancel" states="select_manager,technical_approval,commercial_approval,finance_approval,management_approval" string="Cancel" type="object"/>
+            </button>
+            <field name="state" position="before">
+                <field name="is_tec_manager" invisible="1"/>
+                <field name="is_com_manager" invisible="1"/>
+                <field name="is_fin_manager" invisible="1"/>
+                <field name="is_mgt_manager" invisible="1"/>
+            </field>
+            <xpath expr="//notebook" position="after">
+                <div width="100%" attrs="{'invisible': [('is_app_manager', '=' , False)]}">
+                    <label for="technical_manager" style="width: 14%;"/>
+                    <field name="technical_manager" 
+                        options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"
+                        class="oe_inline"
+                        attrs="{'required': [('is_app_manager', '=' , True)], 'readonly': [('state','in', ['done', 'purchase'])]}"
+                        style="min-width: 25% !important;margin-right:5px !important; "
+                    />
+                    <field name="technical_state"
+                     class="oe_inline mt8 o_state done" readonly="1" style="min-width: 10% !important; " attrs="{'invisible' : [('technical_state', '!=', 'done')]}"/>
+                    <field name="technical_state"
+                     class="oe_inline mt8 o_state pending" readonly="1" style="min-width: 10% !important; "
+                     attrs="{'invisible' : [('technical_state', '!=', 'pending')]}"
+                     />
+                    <field name="technical_state"
+                     class="oe_inline mt8 o_state cancelled" readonly="1" style="min-width: 10% !important; "
+                     attrs="{'invisible' : [('technical_state', '!=', 'cancelled')]}"
+                     />
+                     <field name="technical_state"
+                     class="oe_inline mt8 o_state hold" readonly="1" style="min-width: 10% !important; "
+                     attrs="{'invisible' : [('technical_state', '!=', 'hold')]}"
+                     />
+                    <field name="technical_approved_date"  class="oe_inline mt8" readonly="1" style="min-width: 10% !important;margin-right:5px !important; "/>
+                    <br/>
+
+                    <label for="commersial_manager" style="width: 14%;" />
+                    <field name="commersial_manager" 
+                        options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"
+                        class="oe_inline"
+                        attrs="{'required': [('is_app_manager', '=' , True)], 'readonly': [('state','in', ['done', 'purchase'])]}"
+                        style="min-width: 25% !important;margin-right:5px !important; "
+                    />
+                    <field name="commercial_state" class="oe_inline mt8 o_state pending" readonly="1" style="min-width: 10% !important; "
+                    attrs="{'invisible' : [('commercial_state', '!=', 'pending')]}"
+                    />
+                    <field name="commercial_state" class="oe_inline mt8 o_state done" readonly="1" style="min-width: 10% !important; "
+                    attrs="{'invisible' : [('commercial_state', '!=', 'done')]}"
+                    />
+                    <field name="commercial_state" class="oe_inline mt8 o_state hold" readonly="1" style="min-width: 10% !important; "
+                    attrs="{'invisible' : [('commercial_state', '!=', 'hold')]}"
+                    />
+                    <field name="commercial_state" class="oe_inline mt8 o_state cancelled" readonly="1" style="min-width: 10% !important; "
+                    attrs="{'invisible' : [('commercial_state', '!=', 'cancelled')]}"
+                    />
+                    <field name="commercial_approved_date"  class="oe_inline mt8" readonly="1" style="min-width: 10% !important;margin-right:5px !important; "/>
+                    <br/>
+                    
+                    <label for="financial_manager" style="width: 14%;"/>
+                    <field name="financial_manager" 
+                        options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"
+                        class="oe_inline"
+                        attrs="{'required': [('is_app_manager', '=' , True)], 'readonly': [('state','in', ['done', 'purchase'])]}"
+                        style="min-width: 25% !important;margin-right:5px !important; "
+                    />
+                    <field name="financial_state" class="oe_inline mt8 o_state pending" readonly="1" style="min-width: 10% !important; "
+                    attrs="{'invisible' : [('financial_state', '!=', 'pending')]}"
+                    />
+                    <field name="financial_state" class="oe_inline mt8 o_state done" readonly="1" style="min-width: 10% !important; "
+                    attrs="{'invisible' : [('financial_state', '!=', 'done')]}"
+                    />
+                    <field name="financial_state" class="oe_inline mt8 o_state hold" readonly="1" style="min-width: 10% !important; "
+                    attrs="{'invisible' : [('financial_state', '!=', 'hold')]}"
+                    />
+                    <field name="financial_state" class="oe_inline mt8 o_state cancelled" readonly="1" style="min-width: 10% !important; "
+                    attrs="{'invisible' : [('financial_state', '!=', 'cancelled')]}"
+                    />
+                    <field name="financial_approved_date"  class="oe_inline mt8" readonly="1" style="min-width: 10% !important;margin-right:5px !important; "/>
+                    <br/>
+                    
+                    <label for="management_manager" style="width: 14%;" />
+                    <field name="management_manager" 
+                        options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"
+                        class="oe_inline"
+                        attrs="{'required': [('is_app_manager', '=' , True)], 'readonly': [('state','in', ['done', 'purchase'])]}"
+                        style="min-width: 25% !important;margin-right:5px !important; "
+                    />
+                    <field name="management_state" class="oe_inline mt8 o_state pending" readonly="1" style="min-width: 10% !important; "
+                    attrs="{'invisible' : [('management_state', '!=', 'pending')]}"
+                    />
+                    <field name="management_state" class="oe_inline mt8 o_state hold" readonly="1" style="min-width: 10% !important; "
+                    attrs="{'invisible' : [('management_state', '!=', 'hold')]}"
+                    />
+                    <field name="management_state" class="oe_inline mt8 o_state done" readonly="1" style="min-width: 10% !important; "
+                    attrs="{'invisible' : [('management_state', '!=', 'done')]}"
+                    />
+                    <field name="management_state" class="oe_inline mt8 o_state cancelled" readonly="1" style="min-width: 10% !important; "
+                    attrs="{'invisible' : [('management_state', '!=', 'cancelled')]}"
+                    />
+                    <field name="management_approved_date"  class="oe_inline mt8" readonly="1" style="min-width: 10% !important; "/>
+                    <br/>
+                </div>
+                <br/>
+                <br/>
+                <br/>
+                <div attrs="{'invisible': [('is_app_manager', '=' , False)]}">
+                    <div class="row" attrs="{'invisible': ['|',
+                        ('is_tec_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'technical_approval')
+                        ]}">
+                        <group>
+                            <field name="comments" attrs="{'invisible': ['|',
+                                ('is_tec_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'technical_approval')
+                                ]}" />
+                        </group>
+                        <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                            <button string="On Hold" type="object" name="set_state_hold" class="oe_highlight" />
+                        </div>
+                        <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                            <button string="Rejected" type="object" name="set_state_cancel" class="oe_highlight" />
+                        </div>
+                        <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                            <button string="Approved and Next" type="object" name="set_state_approved" class="oe_highlight" />
+                        </div>
+                    </div>
+                    <div class="row" attrs="{'invisible': ['|',
+                        ('is_com_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'commercial_approval')
+                        ]}">
+                        <group>
+                            <field name="comments" attrs="{'invisible': ['|',
+                            ('is_com_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'commercial_approval')
+                            ]}" />
+                        </group>
+                        <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                            <button string="On Hold" type="object" name="set_state_hold" class="oe_highlight" />
+                        </div>
+                        <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                            <button string="Rejected" type="object" name="set_state_cancel" class="oe_highlight" />
+                        </div>
+                        <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                            <button string="Approved and Next" type="object" name="set_state_approved" class="oe_highlight" />
+                        </div>
+                    </div>
+                    <div class="row" attrs="{'invisible': ['|',
+                        ('is_fin_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'finance_approval')
+                        ]}" >
+                        <group>
+                            <field name="comments" attrs="{'invisible': ['|',
+                            ('is_fin_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'finance_approval')
+                            ]}" />
+                        </group>
+                        <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                            <button string="On Hold" type="object" name="set_state_hold" class="oe_highlight" />
+                        </div>
+                        <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                            <button string="Rejected" type="object" name="set_state_cancel" class="oe_highlight" />
+                        </div>
+                        <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                            <button string="Approved and Next" type="object" name="set_state_approved" class="oe_highlight" />
+                        </div>
+                    </div>
+                    <div class="row" attrs="{'invisible': ['|',
+                        ('is_mgt_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'management_approval')
+                        ]}">
+                        <group>
+                            <field name="comments" attrs="{'invisible': ['|',
+                            ('is_mgt_manager','=', False), '|', ('state', 'in', ('draft', 'done')), ('state', '!=', 'management_approval')
+                            ]}" />
+                        </group>
+                        <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                            <button string="On Hold" type="object" name="set_state_hold" class="oe_highlight" />
+                        </div>
+                        <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                            <button string="Rejected" type="object" name="set_state_cancel" class="oe_highlight" />
+                        </div>
+                        <div class="col-md-4 text-center" style="min-height: 50px !important;padding-top: 12px;">
+                            <button string="Approved and Next" type="object" name="set_state_approved" class="oe_highlight" />
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+            <field name="order_line" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'in', ('done', 'cancel', 'technical_approval','commercial_approval','finance_approval','management_approval', 'select_manager'))]}</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <function name="po_change_sequence"  model="ir.sequence" />
+
+    <record id="paperformat_customize_header_space" model="report.paperformat">
+        <field name="name">Custom Header</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">20</field>
+        <field name="margin_bottom">28</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">15</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <report
+            string="Purchase Order"
+            id="purchase.action_report_purchase_order" 
+            model="purchase.order"
+            report_type="qweb-pdf"
+            name="custom_rfq_report.report_purchaseorder_inherit" 
+            file="custom_rfq_report.report_purchaseorder_inherit"
+            print_report_name="
+                (object.state in ('draft', 'sent') and 'Request for Quotation - %s' % (object.name) or
+                'Purchase Order - %s' % (object.name))"
+            paperformat="paperformat_customize_header_space"/>
+        />
+
+    <record id="view_purchase_order_form" model="ir.ui.view">
+        <field name="name">purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="priority">21</field>
+        <field name="inherit_id"
+               ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <field name="product_id" position="after">
+                <field name="vendor_comment" />
+            </field>
+        </field>
+    </record>
+
+</odoo>
