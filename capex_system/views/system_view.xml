@@ -102,7 +102,7 @@
         <field name="inherit_id"
                ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">
-            <field name="requisition_id" position="after">
+            <field name="origin" position="after">
                 <field name="system_id" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}"/>
             </field>
         </field>

@@ -2,8 +2,8 @@
 {
     "name": "CAPEx System",
     "version": "11.2018.03.13.1",
-    "author": "Denero Team",
-    "website": "https://www.deneroteam.com",
+    "author": "Odoo Advantage Ireland",
+    "website": "erp.odoo.ie",
     "category": "CAPEx System",
     "depends": ['capex_procurement'],
     "data": [
