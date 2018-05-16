@@ -21,7 +21,7 @@
                 <field name="operating_unit_div_id" readonly="1"/>
             </field>
             <field name="date_order" position="attributes">
-                <attribute name="string">RFQ Date</attribute>
+                <attribute name="string">RFQ/Draft PO</attribute>
             </field>
             <field name="requisition_id" position="attributes">
                 <attribute name="string">Tender</attribute>

@@ -2,8 +2,8 @@
 {
     "name": "CAPEx Procurement",
     "version": "11.2018.03.29.1",
-    "author": "Denero Team",
-    "website": "https://www.deneroteam.com",
+    "author": "Odoo Advantage Ireland",
+    "website": "erp.odoo.ie",
     "category": "Project",
     "depends": ['operating_unit_division', 'product', 'purchase', 'purchase_requisition'],
     "data": [

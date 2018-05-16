@@ -854,7 +854,8 @@ class PurchaseOrder(models.Model):
     project_id = fields.Many2one('purchase.project', string="Project", readonly=False)
     boq_id = fields.Many2one('purchase.project.boq', string="BOQ", readonly=True)
     operating_unit_id = fields.Many2one(
-        'operating.unit', 'Operating Unit', inverse="_inverse_operating_unit_id", default=lambda self:self.env.user.default_operating_unit_id
+        'operating.unit', 'Operating Unit', inverse="_inverse_operating_unit_id", default=lambda self:self.env.user.default_operating_unit_id,
+        domain=lambda self: [('id','in',[op_id.id for op_id in self.env.user.operating_unit_ids])]
     )
     operating_unit_div_id = fields.Many2one(
         'operating.unit.division', string='Division',readonly=True
