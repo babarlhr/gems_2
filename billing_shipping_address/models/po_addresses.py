@@ -8,14 +8,24 @@ class PurchaseOrder(models.Model):
         'res.partner', string='Billing Address',
         readonly=True, required=True,
         states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
-        help="Invoice address for current purchase order."
+        help="Invoice address for current purchase order.",
+        domain=lambda self: [('type','in',['invoice']),('parent_id', '=', self.env.user.company_id.partner_id.id)]
     )
+    
     partner_shipping_id = fields.Many2one(
-        'stock.location', string='Shipping Address',
+        'res.partner', string='Shipping Address',
         readonly=True, required=True,
         states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
-        help="Delivery address for current purchase order."
+        help="Delivery address for current purchase order.",
+        domain=lambda self: [('type','in',['delivery']),('parent_id', '=', self.env.user.company_id.partner_id.id)]
     )
+    
+#     partner_shipping_id = fields.Many2one(
+#         'stock.location', string='Shipping Address',
+#         readonly=True, required=True,
+#         states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+#         help="Delivery address for current purchase order."
+#     )
 
     @api.onchange('partner_id')
     def onchange_partner_id_warning(self):
@@ -27,21 +37,21 @@ class PurchaseOrder(models.Model):
         return res
 
 
-class AccountInvoice(models.Model):
-    _inherit = 'account.invoice'
+# class AccountInvoice(models.Model):
+#     _inherit = 'account.invoice'
+# 
+#     @api.model
+#     def default_get(self,default_fields):
+#         """ Compute default partner_id field.
+#         """
+#         res = super(AccountInvoice, self).default_get(default_fields)
+#         if 'purchase_id' in res:
+#             res['partner_id'] = self.env['purchase.order'].browse(res['purchase_id']).partner_bill_to_id.id
+#         return res
 
-    @api.model
-    def default_get(self,default_fields):
-        """ Compute default partner_id field.
-        """
-        res = super(AccountInvoice, self).default_get(default_fields)
-        if 'purchase_id' in res:
-            res['partner_id'] = self.env['purchase.order'].browse(res['purchase_id']).partner_bill_to_id.id
-        return res
 
-
-class StockPicking(models.Model):
-    _inherit = 'stock.picking'
+# class StockPicking(models.Model):
+#     _inherit = 'stock.picking'
 
     # @api.model
     # def default_get(self, default_fields):
@@ -58,16 +68,16 @@ class StockPicking(models.Model):
     #             res['partner_id'] = purchase_order.partner_shipping_id.id
     #     return res
 
-    @api.model
-    def create(self, vals):
-        picking_type_id = False
-        if vals.get('picking_type_id', False):
-            picking_type_id = self.env['stock.picking.type'].browse(vals.get('picking_type_id'))
-        if 'origin' in vals and picking_type_id and picking_type_id.code == 'incoming' and vals.get('origin'):
-            purchase_order = self.env['purchase.order'].search(
-                [('name', '=', vals['origin'])])
-            if purchase_order and purchase_order.partner_shipping_id:
-                vals['location_dest_id'] = purchase_order.partner_shipping_id.id
-        res = super(StockPicking, self).create(vals)
-        return res
+#     @api.model
+#     def create(self, vals):
+#         picking_type_id = False
+#         if vals.get('picking_type_id', False):
+#             picking_type_id = self.env['stock.picking.type'].browse(vals.get('picking_type_id'))
+#         if 'origin' in vals and picking_type_id and picking_type_id.code == 'incoming' and vals.get('origin'):
+#             purchase_order = self.env['purchase.order'].search(
+#                 [('name', '=', vals['origin'])])
+#             if purchase_order and purchase_order.partner_shipping_id:
+#                 vals['location_dest_id'] = purchase_order.partner_shipping_id.id
+#         res = super(StockPicking, self).create(vals)
+#         return res
 

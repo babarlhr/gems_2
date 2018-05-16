@@ -7,8 +7,9 @@
         <field name="priority">17</field>
         <field name="arch" type="xml">
             <field name="partner_id" position="after">
-                <field name="partner_bill_to_id" context="{'default_type':'invoice', 'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}" options='{"always_reload": True}' domain="[('supplier','=',True)]"/>
-                <field name="partner_shipping_id" context="{'default_usage':'internal'}" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}" domain="[('usage', '=', 'internal')]"/>
+                <field name="partner_bill_to_id" context="{'default_type':'invoice', 'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}" options="{'always_reload': True, 'no_create_edit': True, 'no_create':True}" />
+                <!-- <field name="partner_shipping_id" context="{'default_usage':'internal'}" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}" domain="[('usage', '=', 'internal')]"/> -->
+                <field name="partner_shipping_id" context="{'default_usage':'internal'}" options="{'no_create_edit': True, 'no_create':True, 'no_open': True}" />
             </field>
         </field>
     </record>
